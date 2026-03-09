@@ -1,0 +1,442 @@
+---
+category: blog
+title: tmux
+image: /tmux-thumbnail.png
+tags: [article, guide]
+description: a guide on tmux from sratch and my config.
+---
+
+# tmux docs
+
+tmux is a tool used to manage multiple terminal sessions. the biggest benefit is that your shells can keep running in the background even if you close the terminal window. without tmux, closing the terminal usually terminates the shell session and whatever was running inside it.
+
+this article is about how i use tmux and how you can use it in a similar fashion with my own config, which lives in the root of my [dotfiles](https://github.com/samarth-na/dotfiles).
+
+---
+
+## first lets setup tmux and the config
+
+> note: you need nerd fonts installed, otherwise some icons in the status bar will look broken.
+
+1. install tmux. on most modern linux distros this is easy from the package manager.
+2. copy `.tmux.conf` and `.tmux.conf.local` into your home directory.
+3. open a new terminal and run:
+
+```bash
+tmux
+```
+
+4. a status bar should appear at the bottom. that means you are now inside a tmux session.
+5. press `Ctrl-b` then `:` to open tmux command mode.
+6. run this command:
+
+```tmux
+source-file ~/.tmux.conf
+```
+
+7. after the config loads, you should see the themed status bar at the bottom.
+8. now tmux is ready to use.
+
+---
+
+## what tmux manages
+
+tmux mainly works with 3 things:
+
+1. sessions
+2. windows
+3. panes
+
+### panes
+
+a pane is one terminal view. if you split your current terminal into multiple sections, each section is a pane.
+
+### windows
+
+a window is like a workspace or tab inside tmux. each window can contain one or many panes.
+
+### sessions
+
+a session is a collection of windows. you can keep different projects in different sessions and switch between them whenever you want.
+
+so the structure is basically:
+
+`session -> windows -> panes`
+
+---
+
+## prefix key
+
+tmux features are usually triggered through a prefix key. after pressing the prefix, tmux waits for the next key and interprets it as a tmux action instead of sending it to the shell.
+
+in default tmux the prefix is `Ctrl-b`.
+
+in my config i mostly use `Ctrl-a` as the working prefix, but `Ctrl-b` still works too.
+
+so when i say:
+
+- `prefix c`
+- `prefix x`
+- `prefix r`
+
+that means:
+
+1. press `Ctrl-a` or `Ctrl-b`
+2. release
+3. press the next key
+
+### practice
+
+press `Ctrl-a`, then press `Ctrl-c`.
+
+this opens a prompt for creating a new session. type a name and press enter.
+
+now press `prefix` then `$`.
+
+this opens the rename-session prompt. type a new name and press enter.
+
+that is the basic tmux interaction model.
+
+---
+
+## creating and switching sessions
+
+sessions are how i separate projects or work contexts.
+
+use these keys:
+
+- `prefix Ctrl-c`: create a new session
+- `prefix Ctrl-f`: find and switch to a session
+- `prefix Shift-Tab`: go back to the last session
+- `prefix d`: detach from the current session
+
+### why detach matters
+
+detaching means the session keeps running, but you leave it. this is one of the best tmux features.
+
+for example:
+
+- start a server
+- run a long build
+- run tests
+- detach
+- close the terminal
+- later open terminal and reattach
+
+the work is still there.
+
+to reattach from outside tmux:
+
+```bash
+tmux attach
+```
+
+if there are multiple sessions:
+
+```bash
+tmux ls
+tmux attach -t session-name
+```
+
+---
+
+## windows
+
+windows are like tabs inside one session. i usually keep one window for editor, one for server, one for logs, one for git or builds.
+
+### useful window keys
+
+- `Alt-+`: create a new window without using prefix
+- `prefix c`: create a new window
+- `Alt-n` or `Alt-=`: next window
+- `Alt-b` or `Alt--`: previous window
+- `prefix Ctrl-l`: next window
+- `prefix Ctrl-h`: previous window
+- `prefix Tab`: go to last active window
+- `prefix 0-9`: jump to a numbered window
+- `prefix ,`: rename the current window
+- `prefix &`: kill the current window
+
+### good habit
+
+rename important windows. when the status bar shows clear names, navigation becomes much easier.
+
+---
+
+## panes
+
+panes are splits inside a window. this is what makes tmux feel really powerful.
+
+### creating panes
+
+- `Alt-v`: split left/right
+- `Alt-s`: split top/bottom
+- `prefix -`: split top/bottom
+- `prefix _`: split left/right
+
+### moving between panes
+
+- `Alt-Left/Right/Up/Down`: move across panes
+- `Alt-h/j/k/l`: move across panes with vim keys
+- `prefix h/j/k/l`: move across panes
+- `prefix Arrow keys`: move across panes
+- `prefix o`: move to next pane
+- `prefix ;`: go to last pane
+
+### resizing panes
+
+- `prefix H/J/K/L`: resize by 2 cells
+- `prefix Ctrl-Arrow`: resize by 1 cell
+- `prefix Alt-Arrow`: resize by 5 cells
+
+### pane actions
+
+- `Alt-f` or `Alt-z`: zoom/unzoom pane
+- `prefix z`: zoom/unzoom pane
+- `prefix +`: maximize and restore pane
+- `Alt-_`: kill current pane
+- `prefix x`: kill pane with confirmation
+- `prefix <` or `prefix {`: swap pane upward
+- `prefix >` or `prefix }`: swap pane downward
+- `prefix !`: break pane into its own window
+
+### my usual pane workflow
+
+for coding i often use:
+
+- one pane for editor
+- one pane for server or watcher
+- one pane for shell commands
+- one pane for logs
+
+then i use `Alt-h/j/k/l` or `prefix h/j/k/l` to move around quickly.
+
+---
+
+## copy mode
+
+tmux has its own scrollback and selection mode called copy mode. in my config it uses vi-style keys.
+
+### entering copy mode
+
+- `prefix Enter`
+- `prefix [`
+
+### important copy mode keys
+
+- `v`: begin selection
+- `Ctrl-v`: toggle rectangular selection
+- `V`: select line
+- `y`: copy selection and exit
+- `Enter`: copy and exit
+- `Escape`: cancel
+- `q`: cancel
+
+### movement in copy mode
+
+- `h/j/k/l`: move cursor
+- `w/b/e`: move by word
+- `0`, `^`, `$`: line movement
+- `g`, `G`: top and bottom of history
+- `Ctrl-u`, `Ctrl-d`: half-page movement
+- `/` and `?`: search
+- `n` and `N`: next and previous search match
+
+### clipboard integration
+
+my config also copies tmux buffers into the system clipboard.
+
+use:
+
+- `prefix y`: send the current tmux buffer to the system clipboard
+
+on this machine it uses `wl-copy`, but the config also supports tools like `xsel`, `xclip`, `pbcopy`, and `clip.exe` depending on platform.
+
+---
+
+## buffers
+
+tmux keeps copied text in buffers.
+
+use these keys:
+
+- `prefix b`: list buffers
+- `prefix p`: paste from the top buffer
+- `prefix P`: choose which buffer to paste
+- `prefix =`: open buffer chooser
+
+this is useful when you copy several things and want to paste an older one later.
+
+---
+
+## mouse mode
+
+my config keeps mouse mode off by default because i mostly navigate with keyboard.
+
+you can toggle it with:
+
+- `prefix m`
+
+when mouse mode is on, you can:
+
+- click to select panes
+- use the mouse wheel to scroll
+- use right click menus in some places
+- resize panes with mouse drag
+
+this is useful when quickly demoing or when you want more visual interaction.
+
+---
+
+## managing the config
+
+my config makes editing and reloading tmux easy.
+
+### edit config
+
+- `prefix e`: open `.tmux.conf.local` in your editor and reload when you exit
+
+### reload config manually
+
+- `prefix r`: reload the tmux config
+
+this is useful when changing keybindings, colors, theme settings, or plugin config.
+
+---
+
+## layouts
+
+tmux can quickly reorganize panes into layouts.
+
+### useful layout keys
+
+- `prefix Space`: cycle layouts
+- `prefix E`: spread panes evenly
+- `prefix Alt-1`: even-horizontal
+- `prefix Alt-2`: even-vertical
+- `prefix Alt-3`: main-horizontal
+- `prefix Alt-4`: main-vertical
+- `prefix Alt-5`: tiled
+- `prefix Alt-6`: main-horizontal-mirrored
+- `prefix Alt-7`: main-vertical-mirrored
+
+these are nice when splits become messy and you want tmux to quickly reorganize them.
+
+---
+
+## useful views and helpers
+
+- `prefix q`: show pane numbers
+- `prefix w`: open window tree
+- `prefix s`: open session tree
+- `prefix ?`: list keybindings
+- `prefix /`: describe what a key does
+- `prefix i`: show tmux info message
+- `prefix ~`: show tmux message history
+- `prefix t`: show clock mode
+
+these helpers are very useful when learning tmux or when you forget a shortcut.
+
+---
+
+## behavior from this config
+
+some nice quality-of-life things from my setup:
+
+- windows are numbered from `1`
+- panes are numbered from `1`
+- vi keys are used in status and copy mode
+- new windows and panes keep the current working directory
+- new windows can reconnect ssh sessions when possible
+- `escape-time` is `0`, so tmux feels faster
+- history limit is larger than default
+- windows auto-rename
+- windows auto-renumber when one closes
+- terminal title is updated automatically
+- focus events and xterm keys are enabled
+
+---
+
+## plugins used in this setup
+
+this config also enables some plugins:
+
+- `tmux-plugins/tmux-copycat`
+- `tmux-plugins/tmux-cpu`
+- `tmux-plugins/tmux-resurrect`
+- `tmux-plugins/tmux-continuum`
+- `omerxx/tmux-sessionx`
+- `sainnhe/tmux-fzf`
+
+these add extra functionality like search helpers, restore support, session management, and fuzzy finding.
+
+---
+
+## a simple real workflow
+
+here is one practical way i use tmux for a coding project:
+
+1. open terminal and run `tmux`
+2. create a session with `prefix Ctrl-c`
+3. create a main coding window
+4. split panes with `Alt-v` and `Alt-s`
+5. keep editor in one pane
+6. keep dev server in another pane
+7. keep test runner or logs in another pane
+8. make another window for git commands
+9. detach with `prefix d` when done
+10. come back later with `tmux attach`
+
+this is why tmux is so useful. your whole workspace stays alive.
+
+---
+
+## important shortcuts cheat sheet
+
+### session
+
+- `prefix Ctrl-c`: new session
+- `prefix Ctrl-f`: find session
+- `prefix d`: detach
+
+### window
+
+- `Alt-+`: new window
+- `Alt-n` / `Alt-b`: next or previous window
+- `prefix Tab`: last window
+
+### pane
+
+- `Alt-v`: vertical split
+- `Alt-s`: horizontal split
+- `Alt-h/j/k/l`: move pane focus
+- `Alt-f`: zoom pane
+- `Alt-_`: kill pane
+
+### copy
+
+- `prefix Enter`: copy mode
+- `v`: select
+- `y`: copy
+- `prefix p`: paste buffer
+
+### config
+
+- `prefix e`: edit config
+- `prefix r`: reload config
+- `prefix m`: toggle mouse
+
+---
+
+## final notes
+
+tmux can feel strange at first, but after a few days it becomes one of the most useful tools in terminal workflow.
+
+the main idea is simple:
+
+- use sessions for projects
+- use windows for separate tasks
+- use panes for parallel work
+- use detach so your workspace keeps running
+
+once that clicks, tmux becomes hard to live without.
