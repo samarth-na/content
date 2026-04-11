@@ -21,23 +21,23 @@ read: 100 min
 
 ## 📊 Specification Comparison Table
 
-| Feature | Qwen 3.5 (397B-A17B) | GLM-5 (Reasoning) | MiniMax M2.5 | Kimi K2.5 | DeepSeek V3.2 |
-|---------|---------------------|-------------------|--------------|-----------|---------------|
-| **Total Parameters** | 397B | 744B | Not disclosed* | ~1T | 685B |
-| **Active Parameters** | 17B | 40B | Not disclosed* | ~32B | 37B |
-| **Architecture** | Hybrid MoE (Gated DeltaNet + Attention) | Sparse MoE | MoE (undisclosed) | MoE | Sparse MoE |
-| **Context Window** | 256K (open) / **1M** (hosted Plus) | 200K | ~256K (estimated) | **262K** | 128K–130K |
-| **Input Price** (/1M tokens) | ~$0.50–$1.00† | **$1.00** | $0.15–$0.30 | $0.60 | **$0.28** |
-| **Output Price** (/1M tokens) | ~$1.50–$3.00† | **$3.20** | $1.20–$2.40 | $2.50 | **$0.42** |
-| **Speed (Output)** | ~85–190 t/s‡ | 77.5 t/s | 50–**100 t/s** | ~209 t/s (throughput) | 48.6 t/s |
-| **Latency (TTFT)** | Not disclosed | 1.46s | Not disclosed | 10.45s | 1.21s |
-| **MMLU-Pro** | **87.8** | ~65–70 | Not disclosed | Not disclosed | ~62.8 |
-| **GSM8K** | **93.7** | ~89 | Not disclosed | Not disclosed | 89.1 |
-| **GPQA** | **88.4** | Not disclosed | Not disclosed | Not disclosed | ~44 |
-| **SWE-Bench Verified** | 76.4 | Not disclosed | **80.2** | Not disclosed | ~34.7 |
-| **AIME 2025** | 91.3 | Not disclosed | Not disclosed | **96.0** | Not disclosed |
-| **Primary Strengths** | Multimodal, long-context, multilingual | Reasoning, coding, agent tasks | Coding agents, cost efficiency | Math, OCR, document QA | Cost efficiency, balanced performance |
-| **Best For** | Enterprise multimodal apps, long docs | Complex reasoning, R&D agents | Budget agentic coding workflows | STEM/technical analysis | High-volume, cost-sensitive deployments |
+| Feature                       | Qwen 3.5 (397B-A17B)                    | GLM-5 (Reasoning)              | MiniMax M2.5                    | Kimi K2.5               | DeepSeek V3.2                           |
+| ----------------------------- | --------------------------------------- | ------------------------------ | ------------------------------- | ----------------------- | --------------------------------------- |
+| **Total Parameters**          | 397B                                    | 744B                           | Not disclosed\*                 | ~1T                     | 685B                                    |
+| **Active Parameters**         | 17B                                     | 40B                            | Not disclosed\*                 | ~32B                    | 37B                                     |
+| **Architecture**              | Hybrid MoE (Gated DeltaNet + Attention) | Sparse MoE                     | MoE (undisclosed)               | MoE                     | Sparse MoE                              |
+| **Context Window**            | 256K (open) / **1M** (hosted Plus)      | 200K                           | ~256K (estimated)               | **262K**                | 128K–130K                               |
+| **Input Price** (/1M tokens)  | ~$0.50–$1.00†                           | **$1.00**                      | $0.15–$0.30                     | $0.60                   | **$0.28**                               |
+| **Output Price** (/1M tokens) | ~$1.50–$3.00†                           | **$3.20**                      | $1.20–$2.40                     | $2.50                   | **$0.42**                               |
+| **Speed (Output)**            | ~85–190 t/s‡                            | 77.5 t/s                       | 50–**100 t/s**                  | ~209 t/s (throughput)   | 48.6 t/s                                |
+| **Latency (TTFT)**            | Not disclosed                           | 1.46s                          | Not disclosed                   | 10.45s                  | 1.21s                                   |
+| **MMLU-Pro**                  | **87.8**                                | ~65–70                         | Not disclosed                   | Not disclosed           | ~62.8                                   |
+| **GSM8K**                     | **93.7**                                | ~89                            | Not disclosed                   | Not disclosed           | 89.1                                    |
+| **GPQA**                      | **88.4**                                | Not disclosed                  | Not disclosed                   | Not disclosed           | ~44                                     |
+| **SWE-Bench Verified**        | 76.4                                    | Not disclosed                  | **80.2**                        | Not disclosed           | ~34.7                                   |
+| **AIME 2025**                 | 91.3                                    | Not disclosed                  | Not disclosed                   | **96.0**                | Not disclosed                           |
+| **Primary Strengths**         | Multimodal, long-context, multilingual  | Reasoning, coding, agent tasks | Coding agents, cost efficiency  | Math, OCR, document QA  | Cost efficiency, balanced performance   |
+| **Best For**                  | Enterprise multimodal apps, long docs   | Complex reasoning, R&D agents  | Budget agentic coding workflows | STEM/technical analysis | High-volume, cost-sensitive deployments |
 
 \* MiniMax has not publicly disclosed exact parameter counts for M2.5.  
 † Qwen pricing varies by Alibaba Cloud tier; estimates based on Model Studio pricing patterns.  
@@ -56,6 +56,7 @@ read: 100 min
 > ⚠️ **Note**: Benchmark scores are not always directly comparable due to differing evaluation protocols, temperature settings, and scaffolding. Always validate models against your specific use case. Pricing and specs are subject to change—check official provider documentation for the latest details.
 
 For the most current pricing and access options:
+
 - Qwen: [Alibaba Cloud Model Studio](https://bailian.console.aliyun.com)
 - GLM-5: [Zhipu AI Platform](https://bigmodel.cn)
 - MiniMax: [MiniMax Developer Portal](https://www.minimax.io)

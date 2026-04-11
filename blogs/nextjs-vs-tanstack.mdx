@@ -1,0 +1,132 @@
+---
+category: thougts
+title: nextjs vs tanstack
+tags: [webdev, perfomance]
+description: a quick but deep dive into tanstack vs nextj in performance paradime
+---
+
+# Your Next.js Build Is 4.7× Slower — And You're Just Accepting It
+
+_A benchmark that should make every frontend developer uncomfortable._
+
+---
+
+There's a tax you pay every time you hit `bun run build` in a Next.js project. You've normalized it. You grab coffee, switch tabs, maybe open Slack. It's just _how builds work_, right?
+
+Wrong.
+
+---
+
+## The Numbers That Started This
+
+I ran 10 consecutive production builds on equivalent apps — one in **Next.js**, one in **TanStack Start** — using `hyperfine` for statistical rigor. Same machine. Same Bun runtime. No cherry-picking.
+
+Here's what came back:
+
+|                   | Next.js   | TanStack Start |
+| ----------------- | --------- | -------------- |
+| **Mean**          | 5.577 s   | 1.190 s        |
+| **Std Dev (σ)**   | ± 0.790 s | ± 0.333 s      |
+| **Min**           | 4.769 s   | 1.046 s        |
+| **Max**           | 7.299 s   | 2.135 s        |
+| **User CPU time** | 13.928 s  | 1.772 s        |
+| **System time**   | 1.286 s   | 0.290 s        |
+| **Runs**          | 10        | 10             |
+
+**TanStack Start is 4.69× faster on mean build time.** At worst case (max), it's still 3.4× faster. The standard deviation tells its own story too — Next.js swings wildly (up to 2.5 seconds variance), while TanStack is tight and predictable.
+
+That User CPU delta is the real gut punch: **13.9s vs 1.77s**. Next.js is burning nearly 8× more CPU cycles to produce a build. That's not a rounding error. That's architectural overhead.
+
+---
+
+## Why Is TanStack So Much Faster? Let's Not Be Polite About It
+
+### 1. Next.js Carries Years of Legacy Weight
+
+Next.js is a framework that has been retrofitted, patched, and extended over many years. The App Router coexists (awkwardly) with the Pages Router. React Server Components are bolted on top of an older mental model. There's a custom webpack pipeline (yes, still, even with Turbopack as opt-in), a proprietary bundler layer, and a compilation pass that does a lot of things you didn't ask for.
+
+Every abstraction has a cost. Next.js has accumulated a _lot_ of abstractions.
+
+### 2. TanStack Start Is Built for the Modern Toolchain
+
+TanStack Start is built on **Vinxi**, which sits on top of **Vite** and **Rollup**. This isn't just a "newer = faster" argument — it's a fundamentally leaner pipeline:
+
+- Vite's build step is optimized, incremental, and does far less guesswork
+- No custom server runtime to compile around
+- No RSC transform pipeline unless you explicitly opt into it
+- File-based routing is resolved at the framework layer, not re-processed by a bundler
+
+The CPU time gap makes this concrete: TanStack isn't just faster wall-clock — it's doing **a fraction of the work**.
+
+### 3. Predictability Is a Feature
+
+Look at the σ values again. Next.js builds vary by up to ±790ms per run. TanStack holds within ±333ms. In CI/CD pipelines, variance compounds. Flaky build times mean flaky deploy windows, harder capacity planning, and inconsistent DX across team machines. A fast but unpredictable build is a liability. TanStack gives you both speed _and_ consistency.
+
+---
+
+## Methodology: Why This Benchmark Is Fair
+
+Methodology matters. Here's exactly what was done so you can reproduce it:
+
+- **Tool:** [`hyperfine`](https://github.com/sharkdp/hyperfine) — a CLI benchmarking tool with statistical analysis, warmup support, and outlier detection
+- **Runs:** 10 per framework (enough for meaningful mean/σ, not so many that thermal throttling skews results)
+- **Runtime:** Bun — used as the JS runtime and package manager for both benchmarks
+- **Command:** `bun run build` — the standard production build command for each framework
+- **Condition:** Cold builds (no incremental cache) to measure true compilation cost, not cache hits
+- **Machine:** Same hardware, same OS state for both runs
+
+This isn't a "run it once, screenshot it" benchmark. The σ and min/max ranges are here specifically so you can evaluate the consistency, not just the mean.
+
+---
+
+## Real-World DX Impact: This Adds Up Faster Than You Think
+
+Let's do some honest math.
+
+Assume you're a developer who triggers a production build (or a build-equivalent check) **10 times a day** — CI runs, staging deploys, pre-merge checks.
+
+|                     | Next.js             | TanStack         |
+| ------------------- | ------------------- | ---------------- |
+| Per build           | ~5.6s               | ~1.2s            |
+| 10 builds/day       | **56s**             | **12s**          |
+| Per 5-day week      | **280s (~4.7 min)** | **60s (~1 min)** |
+| Per month (20 days) | **~18.5 minutes**   | **~4 minutes**   |
+
+You are personally donating **~15 minutes a month** just to your build tool — before counting CI queue time, team multipliers, or the cognitive cost of context switching while you wait.
+
+Scale that to a team of 5 engineers: **~75 minutes of pure waiting per month.** That's a meeting you didn't need to have, a bug you didn't get to fix.
+
+**And that's on a project small enough to build in under 8 seconds.** Large codebases scale this gap, not shrink it.
+
+---
+
+## When Next.js Still Makes Sense (Being Honest)
+
+This isn't a "delete Next.js" post. There are real reasons to stay:
+
+- **Ecosystem maturity:** Next.js has years of production battle-testing, community solutions, and Vercel's first-class deployment pipeline
+- **RSC depth:** If React Server Components are central to your architecture, Next.js has the most mature implementation today
+- **Team familiarity:** Switching frameworks has a human cost that 4 seconds of build time doesn't always justify
+- **Third-party integrations:** Many auth, CMS, and analytics libraries have Next.js-specific adapters that don't yet exist for TanStack
+
+But here's the thing — these are _tradeoffs_, not free passes. You should be making this choice _consciously_, with eyes open to what you're accepting.
+
+---
+
+## The Uncomfortable Takeaway
+
+The frontend ecosystem has spent years optimizing for **runtime performance** — bundle sizes, hydration strategies, TTFB. Build performance has been treated as a solved, or at least acceptable, problem.
+
+This benchmark says otherwise.
+
+**4.7× is not a marginal difference.** It's the difference between a build step that interrupts your flow and one that doesn't. It's the difference between CI that bottlenecks your team and CI that gets out of the way.
+
+TanStack Start is early-stage compared to Next.js. It will have rough edges. But if the baseline is _already_ this much faster, the trajectory matters.
+
+Next time you're choosing a framework for a greenfield project, ask yourself: **am I picking Next.js because it's the best tool, or because it's the familiar one?**
+
+Those are different questions. You should know which one you're answering.
+
+---
+
+_Benchmark run with hyperfine v1.x on [your machine specs here]. Reproduce it yourself — the commands are `bun run build` in each respective project._

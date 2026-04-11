@@ -1,15 +1,16 @@
 ---
 category: blog
-title: unix philosophy 
+title: unix philosophy
 image: /harvard-unix-hero.jpg
 tags: [article]
-description: an old article on unix philosophy i found on harvard edu website 
+description: an old article on unix philosophy i found on harvard edu website
 ---
 
 - _orignal: [https://cscie2x.dce.harvard.edu/hw/ch01s06.html](https://cscie2x.dce.harvard.edu/hw/ch01s06.html)_
 - _image: [https://devstyler.io/blog/2021/03/29/plan-9-from-bell-labs-in-cyberspace/](https://devstyler.io/blog/2021/03/29/plan-9-from-bell-labs-in-cyberspace/)_
 
 ---
+
 # Basics of the Unix Philosophy
 
 ## Basics of the Unix Philosophy
@@ -30,11 +31,11 @@ Doug McIlroy, the inventor of Unix pipes and one of the founders of the Unix tra
 >
 > (iv) Use tools in preference to unskilled help to lighten a programming task, even if you have to detour to build the tools and expect to throw some of them out after you've finished using them.
 
-He later summarized it this way (quoted in *A Quarter Century of Unix* [Salus]):
+He later summarized it this way (quoted in _A Quarter Century of Unix_ [Salus]):
 
 > This is the Unix philosophy: Write programs that do one thing and do it well. Write programs to work together. Write programs to handle text streams, because that is a universal interface.
 
-Rob Pike, who became one of the great masters of C, offers a slightly different angle in *Notes on C Programming* [Pike]:
+Rob Pike, who became one of the great masters of C, offers a slightly different angle in _Notes on C Programming_ [Pike]:
 
 > **Rule 1.** You can't tell where a program is going to spend its time. Bottlenecks occur in surprising places, so don't try to second guess and put in a speed hack until you've proven that's where the bottleneck is.
 >
@@ -146,7 +147,7 @@ That would be a culture a lot like Unix's.
 
 Because debugging often occupies three-quarters or more of development time, work done early to ease debugging can be a very good investment. A particularly effective way to ease debugging is to design for transparency and discoverability.
 
-A software system is **transparent** when you can look at it and immediately understand what it is doing and how. It is **discoverable** when it has facilities for monitoring and display of internal state so that your program not only functions well but can be *seen* to function well.
+A software system is **transparent** when you can look at it and immediately understand what it is doing and how. It is **discoverable** when it has facilities for monitoring and display of internal state so that your program not only functions well but can be _seen_ to function well.
 
 Designing for these qualities will have implications throughout a project. At minimum, it implies that debugging options should not be minimal afterthoughts. Rather, they should be designed in from the beginning — from the point of view that the program should be able to both demonstrate its own correctness and communicate to future developers the original developer's mental model of the problem it solves.
 
@@ -246,7 +247,7 @@ In the Unix tradition, code generators are heavily used to automate error-prone 
 
 The most basic argument for prototyping first is Kernighan & Plauger's; "90% of the functionality delivered now is better than 100% of it delivered never". Prototyping first may help keep you from investing far too much time for marginal gains.
 
-For slightly different reasons, Donald Knuth (author of *The Art Of Computer Programming*, one of the field's few true classics) popularized the observation that "Premature optimization is the root of all evil".[^3] And he was right.
+For slightly different reasons, Donald Knuth (author of _The Art Of Computer Programming_, one of the field's few true classics) popularized the observation that "Premature optimization is the root of all evil".[^3] And he was right.
 
 Rushing to optimize before the bottlenecks are known may be the only error to have ruined more designs than feature creep. From tortured code to incomprehensible data layouts, the results of obsessing about speed or memory or disk usage at the expense of transparency and simplicity are everywhere. They spawn innumerable bugs and cost millions of man-hours — often, just to get marginal gains in the use of some resource much less expensive than debugging time.
 
@@ -284,9 +285,8 @@ When you design code, organize it so future developers will be able to plug new 
 
 ---
 
-[^1]: Pike's original adds "(See Brooks p. 102.)" here. The reference is to an early edition of *The Mythical Man-Month* [Brooks]; the quote is "Show me your flow charts and conceal your tables and I shall continue to be mystified, show me your tables and I won't usually need your flow charts; they'll be obvious".
+[^1]: Pike's original adds "(See Brooks p. 102.)" here. The reference is to an early edition of _The Mythical Man-Month_ [Brooks]; the quote is "Show me your flow charts and conceal your tables and I shall continue to be mystified, show me your tables and I won't usually need your flow charts; they'll be obvious".
 
 [^2]: Jonathan Postel was the first editor of the Internet RFC series of standards, and one of the principal architects of the Internet. A tribute page is maintained by the Postel Center for Experimental Networking.
 
 [^3]: In full: "We should forget about small efficiencies, say about 97% of the time: premature optimization is the root of all evil". Knuth himself attributes the remark to C.A.R. Hoare.
-
